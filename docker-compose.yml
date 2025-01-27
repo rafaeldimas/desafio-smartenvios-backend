@@ -1,20 +1,14 @@
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    networks: 
-      - smartenvios
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks: 
+      - smartenvios
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    networks: 
-      - smartenvios
-    depends_on:
-      - zookeeper
-    ports:
-      - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -22,28 +16,34 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    networks: 
+      - smartenvios
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
-    networks: 
-      - smartenvios
-    depends_on:
-      - kafka
-    ports:
-      - 19000:9000
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
+    ports:
+      - 19000:9000
+    depends_on:
+      - kafka
+    networks: 
+      - smartenvios
 
   mongo-express:
     image: mongo-express
-    ports:
-      - 8081:8081
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: smartenvios
       ME_CONFIG_BASICAUTH_PASSWORD: smartenvios123
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: smartenvios123
+    ports:
+      - 8081:8081
     depends_on:
       - mongo
     networks:
@@ -71,11 +71,23 @@ services:
       - smartenvios
 
   order-tracking:
-    build: order-tracking
+    image: node:20-alpine
+    user: "node"
+    working_dir: /home/node/app
+    command: "npm start"
     environment:
+      - NODE_ENV=production
       - PORT=3000
+      - MONGO_URI=mongodb://root:smartenvios123@mongo:27017
+      - CARRIERS_BEARER_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGkuY2FycmllcnMuY29tLmJyXC9jbGllbnRcL2xvZ2luIiwiaWF0IjoxNjAzMTIxOTM0LCJuYmYiOjE2MDMxMjE5MzQsImp0aSI6Im1XZ1NucmJDaDlYa08wbGkiLCJzdWIiOjExNzQwLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIiwibmFtZSI6IkFQSSBTTUFSVCBFTlZJT1MiLCJ1c2VybmFtZSI6IkFQSS5TTUFSVEVOVklPUyJ9.DSln97XIpu2PMERsfQY5MjYKiGrQb6NDRh0KYtJ03Rs
     ports:
       - 3000:3000
+    depends_on:
+      - mongo
+      - redis
+      - kafka
+    volumes:
+      - ./order-tracking:/home/node/app
     networks:
       - smartenvios
   
