@@ -1,3 +1,5 @@
+import { Carriers } from '../../carriers/contracts/tracking-info.contract';
+
 class Event {
   timestamp: string;
   status: string;
@@ -7,6 +9,7 @@ class Event {
 
 export class CreateTrackingDto {
   trackingCode: string;
-  carrier: string;
+  carrier: Carriers;
+  wasDelivered: boolean = false;
   events: Event[] = [];
 }

@@ -1,6 +1,7 @@
 export interface TrackingInfoContract {
   trackingCode: string;
   carrier: Carriers;
+  wasDelivered: boolean;
   events: Event[];
 }
 

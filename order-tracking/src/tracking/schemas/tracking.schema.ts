@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Carriers } from '../../carriers/contracts/tracking-info.contract';
 
 export type TrackingDocument = HydratedDocument<Tracking>;
 
@@ -7,6 +8,7 @@ export interface Event {
   timestamp: string;
   status: string;
   location: string;
+  processed: boolean;
 }
 
 @Schema()
@@ -15,7 +17,7 @@ export class Tracking {
   trackingCode: string;
 
   @Prop()
-  carrier: string;
+  carrier: Carriers;
 
   @Prop()
   wasDelivered: boolean;

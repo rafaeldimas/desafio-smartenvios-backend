@@ -15,11 +15,28 @@ export class TrackingRepository {
     return createdTracking;
   }
 
+  async update(
+    trackingCode: string,
+    tracking: Partial<Tracking>,
+  ): Promise<Tracking | null> {
+    return this.trackingModel
+      .findOneAndUpdate({ trackingCode }, tracking, { new: true })
+      .exec();
+  }
+
   async findAll(): Promise<Tracking[]> {
     return this.trackingModel.find().exec();
   }
 
-  async findOne(code: string): Promise<Tracking | null> {
-    return this.trackingModel.findOne({ code }).exec();
+  async findOne(trackingCode: string): Promise<Tracking | null> {
+    return this.trackingModel.findOne({ trackingCode }).exec();
+  }
+
+  async findTrackingWasNotDelivered(): Promise<Tracking[]> {
+    return this.trackingModel.find({ wasDelivered: false }).exec();
+  }
+
+  async findTrackingWithEventNotProcessed(): Promise<Tracking[]> {
+    return this.trackingModel.find({ 'events.processed': false }).exec();
   }
 }

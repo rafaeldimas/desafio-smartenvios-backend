@@ -4,7 +4,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    networks: 
+    networks:
       - smartenvios
 
   kafka:
@@ -20,7 +20,7 @@ services:
       - 9092:9092
     depends_on:
       - zookeeper
-    networks: 
+    networks:
       - smartenvios
 
   kafdrop:
@@ -31,21 +31,6 @@ services:
       - 19000:9000
     depends_on:
       - kafka
-    networks: 
-      - smartenvios
-
-  mongo-express:
-    image: mongo-express
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: smartenvios
-      ME_CONFIG_BASICAUTH_PASSWORD: smartenvios123
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: smartenvios123
-    ports:
-      - 8081:8081
-    depends_on:
-      - mongo
     networks:
       - smartenvios
 
@@ -61,15 +46,6 @@ services:
     networks:
       - smartenvios
 
-  redis:
-    image: redis:6.2-alpine
-    ports:
-      - '6379:6379'
-    volumes: 
-      - redis-data:/data
-    networks:
-      - smartenvios
-
   order-tracking:
     image: node:20-alpine
     user: "node"
@@ -79,22 +55,21 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - MONGO_URI=mongodb://root:smartenvios123@mongo:27017
+      - KAFKA_BROKER=kafka:29092
       - CARRIERS_BEARER_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGkuY2FycmllcnMuY29tLmJyXC9jbGllbnRcL2xvZ2luIiwiaWF0IjoxNjAzMTIxOTM0LCJuYmYiOjE2MDMxMjE5MzQsImp0aSI6Im1XZ1NucmJDaDlYa08wbGkiLCJzdWIiOjExNzQwLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIiwibmFtZSI6IkFQSSBTTUFSVCBFTlZJT1MiLCJ1c2VybmFtZSI6IkFQSS5TTUFSVEVOVklPUyJ9.DSln97XIpu2PMERsfQY5MjYKiGrQb6NDRh0KYtJ03Rs
     ports:
       - 3000:3000
     depends_on:
       - mongo
-      - redis
       - kafka
     volumes:
       - ./order-tracking:/home/node/app
     networks:
       - smartenvios
-  
+
 volumes:
   mongo-data:
-  redis-data:
 
-networks: 
+networks:
   smartenvios:
     driver: bridge

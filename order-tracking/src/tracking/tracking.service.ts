@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CarrierBuilder } from 'src/carriers/carrier.builder';
+import { CarrierBuilder } from '../carriers/carrier.builder';
 import { ExecuteTrackingDto } from './dto/execute-tracking.dto';
 import { Tracking } from './schemas/tracking.schema';
 import { TrackingRepository } from './tracking.repository';
-import { Carriers } from 'src/carriers/contracts/tracking-info.contract';
+import { Carriers } from '../carriers/contracts/tracking-info.contract';
 
 @Injectable()
 export class TrackingService {

@@ -61,6 +61,9 @@ export class CarriersService implements CarrierContract {
     return {
       trackingCode: data.PedidoCliente,
       carrier: Carriers.Carriers,
+      wasDelivered: data.Eventos.some(
+        (evento) => evento.Status === 'ENTREGA REALIZADA',
+      ),
       events: data.Eventos.map((event) => ({
         timestamp: event.Data,
         status: event.Status,
