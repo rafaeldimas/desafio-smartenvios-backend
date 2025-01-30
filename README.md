@@ -16,9 +16,9 @@ Esse é o microservice principal, onde é feito a solitação para efetuar o ras
 
 Nesse microservice temos 3 endpoints para gerenciamento dos rastreios:
 
-POST /tracking Nesse endpoint podemos criar a solicação de rastreio, passando o code no body da request
-GET /tracking Nesse endpoint listamos todos os rastreio solicitados
-GET /tracking/:code Nesse endpoint podemos consultar pelo trackingCode um rastreio especifico
+- POST /tracking Nesse endpoint podemos criar a solicação de rastreio, passando o code no body da request
+- GET /tracking Nesse endpoint listamos todos os rastreio solicitados
+- GET /tracking/:code Nesse endpoint podemos consultar pelo trackingCode um rastreio especifico
 
 ## notification e tracking-portal
 
