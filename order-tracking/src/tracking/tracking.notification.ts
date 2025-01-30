@@ -17,7 +17,7 @@ export class TrackingNotification {
   constructor(
     private readonly trackingRepository: TrackingRepository,
 
-    @Inject('TRACKING_EVENTS_UPDATE')
+    @Inject('ORDER_TRACKING_SERVICE')
     private readonly kafkaClient: ClientKafkaProxy,
   ) {}
 

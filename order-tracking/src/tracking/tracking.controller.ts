@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import { ExecuteTrackingDto } from './dto/execute-tracking.dto';
 import { TrackingService } from './tracking.service';
 

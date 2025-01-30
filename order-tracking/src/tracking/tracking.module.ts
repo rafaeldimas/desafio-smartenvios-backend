@@ -1,34 +1,32 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Tracking, TrackingSchema } from './schemas/tracking.schema';
-import { TrackingController } from './tracking.controller';
-import { TrackingService } from './tracking.service';
-import { TrackingRepository } from './tracking.repository';
-import { CarriersModule } from '../carriers/carriers.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MongooseModule } from '@nestjs/mongoose';
+import { CarriersModule } from '../carriers/carriers.module';
+import { Tracking, TrackingSchema } from './schemas/tracking.schema';
 import { UpdateTrackingEventsTask } from './tasks/update-tracking-events.task';
+import { TrackingController } from './tracking.controller';
 import { TrackingNotification } from './tracking.notification';
-import { Partitioners } from 'kafkajs';
+import { TrackingRepository } from './tracking.repository';
+import { TrackingService } from './tracking.service';
 
 @Module({
   imports: [
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'TRACKING_EVENTS_UPDATE',
+        name: 'ORDER_TRACKING_SERVICE',
         useFactory: (configService: ConfigService) => ({
           transport: Transport.KAFKA,
           options: {
-            producerOnlyMode: true,
             client: {
-              clientId: 'smartenvios.tracking',
+              clientId: 'smartenvios',
               brokers: [
                 configService.get<string>('KAFKA_BROKER') || 'localhost:9092',
               ],
             },
-            producer: {
-              createPartitioner: Partitioners.LegacyPartitioner,
+            consumer: {
+              groupId: 'order-tracking-consumer',
             },
           },
         }),
